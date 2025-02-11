@@ -1,5 +1,6 @@
 #include "orbbec.h"
 #include "utils.h"
+#include <optional>
 
 OrbbecCamera::OrbbecCamera()
 {
@@ -177,12 +178,13 @@ void OrbbecCamera::Run()
                 }
                 point_cloud_.setCreatePointFormat(OB_FORMAT_POINT);
                 std::shared_ptr<ob::Frame> frame = point_cloud_.process(frame_set);
+
                 // calc frame freq
                 auto now = std::chrono::high_resolution_clock::now();
-                auto freq = std::chrono::duration_cast<std::chrono::microseconds>(now - start).count();
+                auto freq = std::chrono::duration_cast<std::chrono::milliseconds>(now - start).count();
                 start = now;
                 std::stringstream ss;
-                ss << "frame freq is " << freq;
+                ss << "frame freq is " << freq << " ms";
                 std::cout << ss.str() << std::endl;
             }
             catch (std::exception &e) {
@@ -201,6 +203,9 @@ void OrbbecCamera::Run()
 std::optional<cv::Mat> OrbbecCamera::GetImg()
 {
     cgu::READ_LOCK(this->img_lock_);
+    if (img_.empty()) {
+        return std::nullopt;
+    }
     return img_;
 }
 
@@ -217,6 +222,9 @@ std::optional<int> OrbbecCamera::GetImgSizeH()
 std::optional<cv::Mat> OrbbecCamera::GetDepth()
 {
     cgu::READ_LOCK(this->depth_lock_);
+    if (depth_.empty()) {
+        return std::nullopt;
+    }
     return depth_;
 }
 
@@ -237,6 +245,8 @@ std::optional<bool> OrbbecCamera::SaveImg()
     if (res.has_value()) {
         img = res.value();
         std::cout << "save color img" << std::endl;
+    } else {
+        std::cout << "save color img failed" << std::endl;
     }
 
     return true;
@@ -249,6 +259,8 @@ std::optional<bool> OrbbecCamera::SaveDepth()
     if (res.has_value()) {
         depth = res.value();
         std::cout << "save depth img" << std::endl;
+    } else {
+        std::cout << "save depth img failed" << std::endl;
     }
 
     return true;

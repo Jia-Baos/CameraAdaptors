@@ -1,5 +1,6 @@
 #include "hikang.h"
 #include "utils.h"
+#include <chrono>
 #include <optional>
 
 bool PrintDeviceInfo(MV_CC_DEVICE_INFO *pstMVDevInfo)
@@ -253,10 +254,10 @@ void HiKangCamera::Run()
 
                 // calc frame freq
                 auto now = std::chrono::high_resolution_clock::now();
-                auto freq = std::chrono::duration_cast<std::chrono::microseconds>(now - start).count();
+                auto freq = std::chrono::duration_cast<std::chrono::milliseconds>(now - start).count();
                 start = now;
                 std::stringstream ss;
-                ss << "frame freq is " << freq;
+                ss << "frame freq is " << freq << " ms";
                 std::cout << ss.str() << std::endl;
             }
             catch (std::exception &e) {
@@ -271,6 +272,9 @@ void HiKangCamera::Run()
 std::optional<cv::Mat> HiKangCamera::GetImg()
 {
     cgu::READ_LOCK(this->img_lock_);
+    if (depth_.empty()) {
+        return std::nullopt;
+    }
     return img_;
 }
 
@@ -306,6 +310,8 @@ std::optional<bool> HiKangCamera::SaveImg()
     if (res.has_value()) {
         img = res.value();
         std::cout << "save color img" << std::endl;
+    } else {
+        std::cout << "save color img failed" << std::endl;
     }
 
     return true;

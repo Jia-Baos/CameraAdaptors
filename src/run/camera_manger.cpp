@@ -4,14 +4,14 @@
 
 int main()
 {
-    HiKangCamera cam_hikang;
-    cam_hikang.Wait4Device();
-    cam_hikang.Init();
+    // HiKangCamera cam_hikang;
+    // cam_hikang.Wait4Device();
+    // cam_hikang.Init();
 
-    std::thread cam_hikang_thread = std::thread([&cam_hikang]() {
-        cam_hikang.Run();
-    });
-    cam_hikang_thread.detach();
+    // std::thread cam_hikang_thread = std::thread([&cam_hikang]() {
+    //     cam_hikang.Run();
+    // });
+    // cam_hikang_thread.detach();
 
     OrbbecCamera cam_orbbec;
     cam_orbbec.Wait4Device();
@@ -24,8 +24,8 @@ int main()
 
     while (true) {
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
-        cam_hikang.SaveImg();
-        cam_hikang.SaveDepth();
+        // cam_hikang.SaveImg();
+        // cam_hikang.SaveDepth();
 
         cam_orbbec.SaveImg();
         cam_orbbec.SaveDepth();

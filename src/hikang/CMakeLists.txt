@@ -20,6 +20,7 @@ set(HiKangSDK_ROOT_DIR ${CMAKE_SOURCE_DIR}/SDK/hikang)
 set(HiKangSDK_INCLUDE_DIR ${HiKangSDK_ROOT_DIR}/include)
 set(HiKangSDK_LIBRARY_DIRS ${HiKangSDK_ROOT_DIR}/lib/x86_64)
 file(GLOB HiKang_LIBS "${HiKangSDK_LIBRARY_DIRS}/lib*.so")
+message(STATUS "library: ${ORBBEC_LIBS}")
 
 # 将源代码添加到此项目的可执行文件。
 # aux_source_directory(. main_files)
